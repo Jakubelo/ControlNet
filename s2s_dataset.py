@@ -39,28 +39,3 @@ class S2sDataSet(Dataset):
 
     def __len__(self):
         return len(self.source_data)
-
-
-class PredictS2sDataSet(Dataset):
-    def __init__(self, dir_path: Path, size):
-        self.source_data = list((dir_path).iterdir())
-        self.size = size
-
-    def __getitem__(self, index):
-        scheme_path = self.source_data[index]
-        prompt = 'flat design'
-
-        source = cv2.imread(str(scheme_path))
-        # Do not forget that OpenCV read images in BGR order.
-        source = cv2.cvtColor(source, cv2.COLOR_BGR2RGB)
-
-        source = cv2.resize(source, self.size)
-
-        # Normalize source images to [0, 1].
-        source = source.astype(np.float32) / 255.0
-
-        # Normalize target images to [-1, 1].
-        return dict(txt=prompt, hint=source, jpg=source, filename=scheme_path.name)
-
-    def __len__(self):
-        return len(self.source_data)
